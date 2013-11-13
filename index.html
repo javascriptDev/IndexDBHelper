@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="IndexedDb.js"></script>
+    <script>
+
+        //初始化数据库
+
+        //1.新建数据库
+        //2.新建表
+        //3.创建数据表对应的Data Model
+
+        var dbInfo = []; //新建数据库的信息
+        var dbversion = 2;
+        var dbname = 'newdb';
+
+        var tables = {//表名字的枚举值
+            cost: 'Cost',
+            user: 'User',
+            catgory: 'Catgory'
+
+        }
+
+        var costTable = {//消费表
+            name: tables.cost, //表名字
+            fields: ['catgory', 'cost', 'date', 'description'],//字段
+            index: [//索引
+                {key: 'date', unique: true} //索引键名，是否唯一
+            ]
+        }
+        var catgoryTable = {//类别表
+            name: tables.catgory,
+            fields: ['catgory'],
+            index: [//索引
+                {key: 'catgory', unique: true}
+            ]
+
+        }
+        var userTable = {//用户表
+            name: tables.user,
+            fields: ['phone', 'pwd', 'uid', 'uname'],
+            index: [//索引
+                {key: 'uid', unique: true},
+                {key: 'uname', unique: true}
+            ]
+        }
+
+        dbInfo.push(costTable);
+        dbInfo.push(catgoryTable);
+        dbInfo.push(userTable);
+
+        Index.create(dbname, dbInfo, null, null, dbversion);
+
+        //初始化数据库完毕
+
+
+        //Data Model 的 增删改查方法
+        window.onload = function () {
+            //实例化一个对象
+            var user = new User({uname: 'joe0.453569732606411'});
+
+            //添加一条数据
+            user.add({}, function (data) {
+                if (data == 'complete') {
+                    console.log('add success;');
+                    //do something you want
+                }
+            });
+
+            //更新一条数据
+            user.update({uid: 123}, function (data) {
+                if (data == 'success') {
+                    console.log('update success;');
+                    //do something you want
+                }
+                else {
+                    //not find this item to uopdate
+                }
+
+            });
+
+            //获取数据表的所有数据
+            user.get(function (data) {
+                console.log('get success');
+                data.forEach(function (item) {
+                    var div = document.createElement('div');
+                    div.innerText = item.uname + ':' + item.uid;
+                    document.body.appendChild(div);
+                })
+            });
+
+            //删除一条数据
+            user.delete(function (data) {
+                if (data == 'success') {
+                    console.log('delete success;');
+                    //do something you want
+                } else {
+                    //not get this item to delete
+                }
+            })
+
+        }
+
+    </script>
+</head>
+<body>
+</body>
+</html>
